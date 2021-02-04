@@ -10,14 +10,20 @@ class HomeController extends Controller
 
     public function index()
     {
-        $stripe = new \Stripe\StripeClient(
-            'sk_test_51IF2tuHGNaMt5HmwgPYIKTGA3FttMFzSAkKd1y5osEzFKPHe3yDoUgagSZnjSrBNLXGlgVb3CL6I6JVtFbw61pa6004YjnhcDT'
-          );
-          $stripe->skus->all();
+        \Stripe\Stripe::setApiKey('sk_test_51IF2tuHGNaMt5HmwgPYIKTGA3FttMFzSAkKd1y5osEzFKPHe3yDoUgagSZnjSrBNLXGlgVb3CL6I6JVtFbw61pa6004YjnhcDT');
+        
+        $product = \Stripe\Product::all();
 
-          dd($stripe);
+        $price = \Stripe\Price::all();
 
-        return view('dashboard');
+        
+        dd($price, $product);
+
+        return view('home', [
+            'product' => $product,
+            'price' => $price,
+        ]);
+
     }
 
 }
