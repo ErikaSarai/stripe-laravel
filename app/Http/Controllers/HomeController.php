@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    
+     
 
     public function index()
     {
@@ -17,12 +17,10 @@ class HomeController extends Controller
         $price = \Stripe\Price::all();
 
         
-        dd($price, $product);
 
-        return view('home', [
-            'product' => $product,
-            'price' => $price,
-        ]);
+        return view('home')
+        ->with('product', $product)
+        ->with('price', $price);
 
     }
 
