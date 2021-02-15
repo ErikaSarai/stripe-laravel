@@ -69,6 +69,7 @@
       </div>
 
         @foreach($product as $item)
+        {{-- {{dd($item)}} --}}
             <div class="col-md-4">
             <div class="card mb-4 shadow-sm">
                 <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"><title>{{ $item->name }}</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">{{ $item->name }}</text></svg>
@@ -76,7 +77,7 @@
                 <p class="card-text">Descripcion del producto: <b>{{ $item->description }}</b></p>
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
-                    <a href="" class="btn btn-sm btn-outline-secondary pay">Comprar</a>
+                    <a href="" class="btn btn-sm btn-outline-secondary pay" data-prod="{{ $item->id }}">Comprar</a>
                     </div>
                 </div>
                 </div>
@@ -92,4 +93,44 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj" crossorigin="anonymous"></script>
+
+  <script type="text/javascript">
+
+   (function(){
+
+    // Create an instance of the Stripe object with your publishable API key
+    var stripe = Stripe    ("pk_test_51IF2tuHGNaMt5HmwCL5czoE2qyP9fx3bBh6jFnL6gfroAyNRqV9CENVeeLAPPT29Yf9wLLkqDc0evXAJJHRpIqB700xC5ewrdW");
+    var checkoutButton = document.getElementById("checkout-button");
+    $(".pay").click(function(e) {
+      stripe.redirectToCheckout({
+        items: [{prod: $(this).data('prod'), quantity: 1}],
+
+
+        success_url => 'https://your-website.com/success',
+        cancel_url => 'https://your-website.com/cancel',
+ 
+      })
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (session) {
+          return stripe.redirectToCheckout({ sessionId: session.id });
+        })
+        .then(function (result) {
+          // If redirectToCheckout fails due to a browser or network
+          // error, you should display the localized error message to your
+          // customer using error.message.
+          if (result.error) {
+            alert(result.error.message);
+          }
+        })
+        .catch(function (error) {
+          console.error("Error:", error);
+        });
+        });
+      });
+    });
+
+   
+  </script>
 </x-app-layout>
